@@ -1,0 +1,33 @@
+# craft-qa config. Copy to the repo root as .craft-qa.toml and fill it in.
+# The skill reads this file before each step. The project's own rules files win over it.
+
+[project]
+repo = "."                                  # path to the code repo
+main_branch = "main"
+spec = "docs/test-spec.md"                  # the spec (step 2)
+test_index = "tests/index.toml"             # one entry per test ID with its status (progress.py reads it)
+known_failures = "known-failures.toml"      # the exceptions list (step 5)
+open_bugs = ""                              # optional: a file of open bugs that have no known-failures row
+
+[commands]
+test = "make test"                          # runs the whole suite locally
+test_one = "make test-one TEST={test}"      # runs one test; {test} is replaced (canary-run.sh uses it)
+ci = "gh workflow run ci.yml --ref {branch}"   # starts CI for a branch
+estimate = ""                               # optional: prints an estimate, e.g. "my-estimator --size {size} --kind {kind}"
+
+[exceptions]
+threshold_tokens = 2_000_000                # a known-failures row is allowed only when the fix estimate is above this
+approvers = ["Owner Name"]                  # names accepted in the "Approved-by:" commit trailer
+trailer = "Approved-by"
+
+[models]
+# One model per role. Use names your agent runner understands.
+spec = "strongest-model"                    # once per phase: research, spec, definition of done
+lead = "strong-model"                       # splits the spec into items, writes briefs, merges
+coder = "fast-model"                        # per item: tests, canaries, fixes
+reviewer = "strong-model"                   # one review per item; stronger than coder
+phase_review = "strongest-model"            # once per phase: review of the whole phase
+
+[budget]
+cap = "75 % of the weekly limit"            # stop and ask the owner before you pass it
+ci_runs_per_branch = 1                      # fix rounds don't start a new CI run; the merge run checks them

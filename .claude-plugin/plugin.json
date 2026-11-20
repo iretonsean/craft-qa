@@ -1,0 +1,10 @@
+{
+  "name": "craft-qa",
+  "version": "0.1.0",
+  "description": "One loop for finding and fixing bugs while agents build your product: research how products fail, spec the tests, fix every bug in the item that found it, and keep progress honest by counting open bugs.",
+  "author": {"name": "iretonsean"},
+  "homepage": "https://github.com/iretonsean/craft-qa",
+  "repository": "https://github.com/iretonsean/craft-qa",
+  "license": "MIT",
+  "keywords": ["qa", "testing", "agents", "bugs", "progress", "product"]
+}

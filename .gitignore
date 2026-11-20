@@ -1,0 +1,4 @@
+.fixture/
+__pycache__/
+*.pyc
+.craft-qa.toml

@@ -1,0 +1,28 @@
+# known-failures.toml: failing tests that CI lets through, ONLY for fixes too big for the item that found them.
+#
+# This list isn't a way to make CI green. Every row is an open bug and counts against progress.
+# A row may be added only when:
+#   1. the fix estimate is above the config's exceptions.threshold_tokens, and
+#   2. the owner said yes, and
+#   3. the commit that adds the row carries the trailer "Approved-by: <owner name>" (kf-guard.sh checks it in CI).
+# A branch that fixes the bug removes its row. A row whose test passes now is removed at once.
+#
+# One [[failure]] per row:
+#   id               the spec row ID
+#   test             the test name (optional; without it every test of the row is listed)
+#   bug              the bug ID in the backlog
+#   date             the day the row was added
+#   what             what the user sees, in plain words
+#   estimate_tokens  the fix estimate that put it above the threshold
+#   approved_by      the owner who approved it (must match the commit trailer)
+#   fix_plan         the item that will fix it, and when
+
+[[failure]]
+id = "T2.2"
+test = "t2_2_setting_has_a_reader"
+bug = "BUG-41"
+date = "2026-01-15"
+what = "Three settings change nothing: no code reads them"
+estimate_tokens = 3_500_000
+approved_by = "Owner Name"
+fix_plan = "Item SET-07, next phase"
