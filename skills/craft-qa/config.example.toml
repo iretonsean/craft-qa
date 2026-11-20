@@ -4,16 +4,45 @@
 [project]
 repo = "."                                  # path to the code repo
 main_branch = "main"
-spec = "docs/test-spec.md"                  # the spec (step 2)
 test_index = "tests/index.toml"             # one entry per test ID with its status (progress.py reads it)
 known_failures = "known-failures.toml"      # the exceptions list (step 5)
 open_bugs = ""                              # optional: a file of open bugs that have no known-failures row
+
+[intake]
+file = "qa/intake.md"                       # step 0: the intake answers; every later step reads them
+ask_tool = "AskUserQuestion"                # used when available; else the questions go in chat
+max_forms = 3                               # 1-4 questions per form
+
+[research]
+dir = "qa/research"                         # step 1: one failure report per product, plus README.md (index)
+checklist = "qa/expected-behavior.md"       # merged expected-behavior checklist with the TOP list
+past_failures = "qa/past-failures.md"       # the team's own past bugs and embarrassments
+# Filled from the intake. role = "competitor" or "inspiration". sources is optional (links to read first).
+products = [
+  # { name = "Product A", role = "competitor", sources = ["https://example.com/help", "https://example.com/changelog"] },
+  # { name = "Product B", role = "inspiration" },
+]
+checklist_from = []                         # the 1-2 products users compare with first (names from products)
+
+[suite]
+spec = "qa/spec.md"                         # step 2: rows, Constants, infrastructure, smoke set, CI tiers, build order
+edge_cases = "qa/edge-cases.md"
+decisions = "qa/decisions.md"
+audit_prompts = "qa/audit-prompts.md"
+reviews_dir = "qa/reviews"                  # step 3: r<round>-<lens>.md
+review_lenses = ["feature-coverage", "test-quality", "red-team"]   # 3-5 per round; red-team always
+max_rows_per_item = 5                       # rows per backlog item
 
 [commands]
 test = "make test"                          # runs the whole suite locally
 test_one = "make test-one TEST={test}"      # runs one test; {test} is replaced (canary-run.sh uses it)
 ci = "gh workflow run ci.yml --ref {branch}"   # starts CI for a branch
 estimate = ""                               # optional: prints an estimate, e.g. "my-estimator --size {size} --kind {kind}"
+
+[ci]
+per_merge_minutes = 8                       # the suite may add at most this much wall time per merge
+nightly = false                             # true only after the owner approved the cost
+places = ["headless"]                       # where tests can run: headless, real-window, device-lab, manual
 
 [exceptions]
 threshold_tokens = 2_000_000                # a known-failures row is allowed only when the fix estimate is above this
@@ -22,7 +51,9 @@ trailer = "Approved-by"
 
 [models]
 # One model per role. Use names your agent runner understands.
-spec = "strongest-model"                    # once per phase: research, spec, definition of done
+research = "fast-model"                     # once per phase, one agent per product: failure reports, checklist
+spec = "strongest-model"                    # once per phase: spec, edge cases, decisions, audit prompts
+spec_review = "strong-model"                # one reviewer per lens per round; use the strongest for red team
 lead = "strong-model"                       # splits the spec into items, writes briefs, merges
 coder = "fast-model"                        # per item: tests, canaries, fixes
 reviewer = "strong-model"                   # one review per item; stronger than coder

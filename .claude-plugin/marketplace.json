@@ -1,8 +1,15 @@
 {
   "name": "craft-qa",
   "description": "One plugin: craft-qa, find and fix bugs in one loop while agents build.",
-  "owner": {"name": "iretonsean"},
+  "owner": {
+    "name": "iretonsean"
+  },
   "plugins": [
-    {"name": "craft-qa", "source": "./", "description": "Find and fix bugs in one loop while agents build your product.", "version": "0.1.0"}
+    {
+      "name": "craft-qa",
+      "source": "./",
+      "description": "Build a test suite from competitor research, then find and fix bugs in one loop while agents build your product.",
+      "version": "0.2.0"
+    }
   ]
 }
